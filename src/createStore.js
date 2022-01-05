@@ -1,4 +1,17 @@
-let state;
+"use strict";
+
+function createStore(reducer = (f) => f) {
+  let state;
+
+  function dispatch(action) {
+    state = reducer(state, action);
+    render();
+  }
+
+  const getState = () => state;
+
+  return { getState, dispatch };
+}
 
 function reducer(state = { count: 0 }, action) {
   switch (action.type) {
@@ -10,14 +23,11 @@ function reducer(state = { count: 0 }, action) {
   }
 }
 
-function dispatch(action) {
-  state = reducer(state, action);
-  render();
-}
+const { getState, dispatch } = createStore(reducer);
 
 function render() {
   let container = document.getElementById("container");
-  container.textContent = state.count;
+  container.textContent = getState().count;
 }
 
 dispatch({ type: "@@INIT" });
